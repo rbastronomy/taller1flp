@@ -3,7 +3,7 @@
 
 # Proyecto 1 Fundamentos de lenguaje de programación
 
-En este proyecto se realizo un cuestionario sobre la depresión en python, y se utlizo tambien base de datos Mysql.
+En este proyecto se realizo un cuestionario sobre la depresión en Python, y se utilizo tambien base de datos MySQL.
 
 # Requisitos para ejecutar el proyecto:
 
