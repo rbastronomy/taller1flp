@@ -1,6 +1,7 @@
 from DataBase.conexion import DAO
 import funciones
 dao = DAO()
+idpatient = 0
 def menu():
     flag = True
     while(flag==True):
@@ -38,7 +39,10 @@ def login(i):
 
     elif (i == 2):
         info = dao.listpatients()
-        if funciones.verificationloginpatients(info) == True:
+        verification = funciones.verificationloginpatients(info)
+        if verification[0] == True:
+            global runuser
+            runuser = verification[1]
             submenunpatient()
 
     
@@ -60,7 +64,8 @@ def submenunadm():
             print("10.- Printear Test")
             print("11.- Ingresar un nuevo Test")
             print("12.- Eliminar un Test")
-            print("13.- Salir")
+            print("13.- Agregar Pregunta a Test")            
+            print("14.- Salir")
 
 
             option = int(input("Seleccione una opción: "))
@@ -105,8 +110,10 @@ def submenunadm():
                 dao.updateobservationpatients(function)
 
             elif (option==9):
-                info = dao.arraypatients()
-                funciones.searchpatient(info)
+                info = dao.patientssearch()
+                function = funciones.searchpatient(info)
+                asdasd = dao.printonepatient(function)
+                funciones.arrayonepatients(asdasd)
 
             elif (option==10):
                 questions = dao.printtest()
@@ -118,12 +125,17 @@ def submenunadm():
                 info = dao.printtest()
                 function = funciones.deltest(info)
                 dao.deltest(function)   
+            elif(option==13):
+                questions = dao.arrayquestionstest()
+                test= dao.printtest()
+                info = funciones.updatequestiontest(questions,test)
+                dao.updateidtestquestion(info)
 
-
-            elif (option==13):
+            elif (option==14):
                 flag=False
                 print("Vuelva Pronto")
                 break
+           
             else:
                 print("error")  
 def submenunpatient():
@@ -136,16 +148,29 @@ def submenunpatient():
             print("2.- Salir") 
             option = int(input("Seleccione una opción: "))
             if (option==1):
+                info = dao.printidpatientrun()
+                infouser = funciones.searchidpatient(info,runuser)
                 test = dao.printtestpatient()
-                if funciones.arraytestpatient(test) == True:
+                test2 = funciones.arraytestpatient(test)
+                if test2[0] == True:
                     op = dao.printquestionspatient()
-                    funciones.arrayquestiontest(op)
+                    function = funciones.arrayquestiontest(op,test2[1],infouser)
+                    functionasd= funciones.idpollmax(function[3])
+
+                    ##function[1]
+                ##idmaxpoll = dao.printmaxpoll()
+                ##idmaxpoll2 = funciones.maxpoll(idmaxpoll[0])
+                ##information2 = dao.resultpoll(function[3])
+                ##funciones.updateresult(information2)
+
+
 
             elif (option==2):
-                flag=False
-                print("Vuelva Pronto")
+                information2 = dao.resultpoll(functionasd)
+                funciones.updateresult(information2)
             else:
-                print("error")  
+                print("error") 
+               
 
 if __name__ == "__main__":
-    submenunpatient()
+    menu()

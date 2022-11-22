@@ -9,7 +9,7 @@ class DAO():
                 host='localhost',
                 port=3306,
                 user='root',
-                db='FLP'
+                db='FLP2'
             )
         except Error as ex:
             print("Error al intentar la conexión: {0}".format(ex))
@@ -43,6 +43,16 @@ class DAO():
                 return resultados
             except Error as ex:
                 print("Error al intentar la conexión: {0}".format(ex)) 
+
+    def patientssearch(self):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute("select run,dv from patients;")
+                resultados = cursor.fetchall()
+                return resultados
+            except Error as ex:
+                print("Error al intentar la conexión: {0}".format(ex)) 
     
     def conectionloginpatients(self,curso):
         if self.conexion.is_connected():
@@ -61,6 +71,13 @@ class DAO():
             result = cursor.fetchall()
             return result
 
+    def arrayquestionstest(self):
+        if self.conexion.is_connected():
+            cursor = self.conexion.cursor()
+            cursor.execute("Select *from questions where DELETED_AT=False and idtest is NULL ;")
+            result = cursor.fetchall()
+            return result
+
     def arraypatients(self):
         if self.conexion.is_connected():
             cursor = self.conexion.cursor()
@@ -72,7 +89,7 @@ class DAO():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sql = "insert into QUESTIONS(idtest,questions,descriptions,deleted_at) values (NULL,'{0}','{1}',False);"
+                sql = "insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'{0}',4,'{1}',False);"
                 cursor.execute(sql.format(questions[0], questions[1]))
                 self.conexion.commit()
                 print("¡Pregunta registrada!\n")
@@ -213,25 +230,75 @@ class DAO():
             except Error as ex:
                 print("Error al intentar la conexión: {0}".format(ex))  
 
-    def printmaxpoll(self): 
-        if self.conexion.is_connected():
-            cursor = self.conexion.cursor()
-            cursor.execute("select  MAX(idpoll) from poll;")
-            result = cursor.fetchall()
-            return result 
-
     def addidpoll(self,test):
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                sql ="insert into poll (idpoll) value ({0});"
-                cursor.execute(sql(test[0]))
+                sql ="insert into poll (idpoll,idtest,idpatient) value ({0},{1},{2});"
+                sql= sql.format(test[0],test[1],test[2])
+                cursor.execute(sql)
                 self.conexion.commit()
+                
                 print("¡pol agregada!\n")
+               
+            except Error as ex:
+                print("Error al intentar la conexión: {0}".format(ex))
+
+    def printmaxpoll(self): 
+        if self.conexion.is_connected():
+            cursor = self.conexion.cursor(buffered=True)
+            cursor.execute("select  MAX(idpoll) from poll;")
+            result = cursor.fetchall()
+            return result 
+
+
+
+    def printonepatient(self,info):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor(buffered=True)
+                sql="select idpatient,run,dv,NAME_PA,FATHER_NAME,MOTHER_NAME,GENDER,BIRTHDAY,OBSERVATIONS from patients where DELETED_AT = 0 and run = {0} and dv = '{1}';"
+                sql= sql.format(info[0],info[1])
+                cursor.execute(sql)
+                self.conexion.commit()
+                result = cursor.fetchall()
+                print("¡encontrado!\n")
+                return result 
             except Error as ex:
                 print("Error al intentar la conexión: {0}".format(ex))
 
 
+    def updateidtestquestion(self, info):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                sql = "update questions set idtest = {0} where idquestion = {1}"
+                cursor.execute(sql.format(info[0],info[1]))
+                self.conexion.commit()
+                print("¡Pregunta agregada!\n")
+            except Error as ex:
+                print("Error al intentar la conexión: {0}".format(ex))
+
+    def printidpatientrun(self): 
+        if self.conexion.is_connected():
+            cursor = self.conexion.cursor()
+            cursor.execute("select idpatient,run from patients;")
+            result = cursor.fetchall()
+            return result   
+
+    def resultpoll(self,info):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor(buffered=True)
+                sql ="select poll.idpoll,sum(points),tests.cut_point from poll join answers on poll.idpoll = answers.idpoll join tests on tests.idtest = poll.idtest where poll.idpoll = {0};"
+                sql= sql.format(info)
+                cursor.execute(sql)
+                result = cursor.fetchall()
+                print("¡encontrado!\n")
+                return result 
+            except Error as ex:
+                print("Error al intentar la conexión: {0}".format(ex))
+        
 
 
     #def arrayquestionstest():

@@ -32,7 +32,6 @@ def listpatients(info):
 
 def verificationloginpatients(info):
     flag = False
-    nameuser = ''
     run = int(input("RUN: "))
     password = input("PASSWORD: ")
     for cur in info:
@@ -41,16 +40,16 @@ def verificationloginpatients(info):
             break
     if flag == True:
         print("Bienvenido",cur[2])
-        return True   
+        return (True,run)
     else:
         print("No estas Registrado")  
-        return False   
+        return (False,0)   
 
 def arrayquestions(questions):
     print("\nPreguntas: \n")
     for cur in questions:
-        info = "ID: {0} | IDTEST: {1} | Pregunta: '{2}' | Descripcion: '{3}'"
-        print(info.format(cur[0], cur[1], cur[2],cur[3]))
+        info = "ID: {0} | IDTEST: {1} | Valor: '{2}' | Pregunta: '{3}' | Descripcion: '{4}'"
+        print(info.format(cur[0], cur[1], cur[2],cur[3],cur[4]))
     print(" ")
 
 def arraypatients(patients):
@@ -62,6 +61,13 @@ def arraypatients(patients):
 
 def arrayobservationpatients(patients):
     print("\nPasientes: \n")
+    for cur in patients:
+        info = "ID: {0} | RUN: {1} | DIGITO VERIFICADOR: '{2}' | NOMBRES: '{3}' | APELLIDO PATERNO: '{4}'  | APELLIDO MATERNO: '{5}' | GENERO: '{6}' | FECHA NACIMIENTO '{7}' | OBSERVACION '{8}'" 
+        print(info.format(cur[0], cur[1], cur[2],cur[3],cur[4],cur[5],cur[6],cur[7],cur[8]))
+    print(" ")
+
+def arrayonepatients(patients):
+    print("\nPasiente: \n")
     for cur in patients:
         info = "ID: {0} | RUN: {1} | DIGITO VERIFICADOR: '{2}' | NOMBRES: '{3}' | APELLIDO PATERNO: '{4}'  | APELLIDO MATERNO: '{5}' | GENERO: '{6}' | FECHA NACIMIENTO '{7}' | OBSERVACION '{8}'" 
         print(info.format(cur[0], cur[1], cur[2],cur[3],cur[4],cur[5],cur[6],cur[7],cur[8]))
@@ -136,15 +142,14 @@ def Updateobservationpatient(info):
 
 def searchpatient(info):
     flag = False
-    nameuser = ''
     run = int(input("RUN: "))
     dv = input("Digito Verificador: ")
     for cur in info:
-        if (cur[1] == run) and (cur[2]==dv):
+        if (cur[0] == run) and (cur[1]==dv):
             flag = True
-            break
     if flag == True:
-        arrayobservationpatients(info)
+        information =(run,dv)
+        return information
     else:
         print("No estas Registrado o no estas Disponible")  
 
@@ -163,6 +168,20 @@ def addtest():
     observations = input("Ingrese la descripcion del test: ")
     add = (name,cut_point,max_point,observations)
     return add
+
+def updatequestiontest(questions,test):
+    arrayquestionstest(questions)
+    idquestion = int(input("Ingrese que pregunta quiere agregar: "))
+    arraytest(test)
+    idtest = int(input("Ingrese al test que pregunta quiere agregar: "))
+    return (idtest,idquestion)
+
+def arrayquestionstest(questions):
+    print("\nPreguntas Disponibles: \n")
+    for cur in questions:
+        info = "ID: {0} | IDTEST: {1} | Pregunta: '{2}' | Descripcion: '{3}'"
+        print(info.format(cur[0], cur[1], cur[2],cur[3]))
+    print(" ")
 
 def deltest(info):
     arraytest(info)
@@ -184,37 +203,37 @@ def arraytestpatient(tests):
     for cur in tests:
         if cur[0] == option:
             print("estas haciendo el test numero ",cur[0])
-            return True
+            return (True,cur[0])
         else:
-            return False
+            return (False,0)
 
-def arrayquestiontest(tests):
+def arrayquestiontest(tests,idtest,idpatient):
     print("\nPreguntas: \n")
+    poll= dao.printmaxpoll()
+    a = maxpoll(poll[0])
+    if a==None:
+        a = 1
+        group =(a,idtest,idpatient)
+        dao.addidpoll(group)
+    else:
+        a=a+1
+        group =(a,idtest,idpatient)
+        dao.addidpoll(group)
     for cur in tests:
         info = " '{0}' '{1}'  {2} '{3}'"
         info.format(cur[0], cur[1], cur[2], cur[3])
         print("PREGUNTA: ",cur[1], "| EXPLICACION: ",cur[2])
-        add = addanswerd(cur[0])
+        add = addanswerd(cur[0],a)
         dao.addaswerd(add)
+        
         print(" ")
+    return add
 
-
-def addanswerd(dato):
+def addanswerd(dato,a):
         aswerd = int(input("Cual es su Respuesta(Ejemplo= 1): "))
         text = input("Argumentar Respuesta (opcional): ")
-        poll= dao.printmaxpoll()
-        print(poll[0])
-        a = maxpoll(poll[0])
-
-        if a==None:
-            a = 1
-        else:
-            a=a+1
         add = (dato,aswerd,text,a)
-        
-        dao.addidpoll(add[3])
-        
-        return add
+        return (add)
 
             
 def maxpoll(tests):
@@ -224,6 +243,7 @@ def maxpoll(tests):
 def idpoll(tests):
     dato = tests[0]
     return dato
+
 
 def verification(info):
     flag = False
@@ -243,6 +263,19 @@ def passwordprint(tests):
     password = tests[0]
     return password
 
+def searchidpatient(info,run):
+    flag = False
+    for cur in info:
+        if (cur[1]==run):
+            flag = True
+    if flag == True:
+        return (cur[0])   
+
+def updateresult(info):
+    for cur in info:
+        info = " {0} | {1} | {2}"
+        print(info.format(cur[0], cur[1], cur[2]))
+    print(" ")
 
 #def countquestions(questions):
 #    print("\nValor: \n")
