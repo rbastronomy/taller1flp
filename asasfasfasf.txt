@@ -1,0 +1,281 @@
+use FLP;
+
+/*==============================================================*/
+/* Table: ANSWERS                                               */
+/*==============================================================*/
+create table ANSWERS 
+(
+   IDANSWER             int auto_increment             not null,
+   IDPOLL               integer                null,
+   IDQUESTION           integer             null,
+   POINTS               integer                        null,
+   TEXT                 char(100)                      null,
+   constraint PK_ANSWERS primary key (IDANSWER)
+);
+
+/*==============================================================*/
+/* Index: ANSWERS_PK                                            */
+/*==============================================================*/
+create unique index ANSWERS_PK on ANSWERS (
+IDANSWER ASC
+);
+
+/*==============================================================*/
+/* Table: PATIENTS                                              */
+/*==============================================================*/
+create table PATIENTS 
+(
+   IDPATIENT            int auto_increment             not null,
+   RUN                  integer                        null,
+   DV                   char(50)                       null,
+   NAME_PA          char(50) null,
+   FATHER_NAME          char(50)                       null,
+   MOTHER_NAME          char(50)                       null,
+   GENDER               char(20)                       null,
+   BIRTHDAY             char(50)                       null,
+   PASSWORD             varchar(50)                    null,
+   OBSERVATIONS         char(100)                      null,
+   DELETED_AT           boolean                        null,
+   constraint PK_PATIENTS primary key (IDPATIENT)
+);
+
+/*==============================================================*/
+/* Index: PATIENTS_PK                                           */
+/*==============================================================*/
+create unique index PATIENTS_PK on PATIENTS (
+IDPATIENT ASC
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_1_FK                                     */
+/*==============================================================*/
+create index RELATIONSHIP_1_FK on PATIENTS (
+IDPATIENT ASC
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_6_FK                                     */
+/*==============================================================*/
+create index RELATIONSHIP_6_FK on PATIENTS (
+IDPATIENT ASC
+);
+
+/*==============================================================*/
+/* Table: POLL                                                  */
+/*==============================================================*/
+create table POLL 
+(
+   IDPOLL               int auto_increment             not null,
+   IDTEST               integer             null,
+   IDPATIENT            integer             null,
+   RESULT               boolean                        null,
+   constraint PK_POLL primary key (IDPOLL)
+);
+
+/*==============================================================*/
+/* Index: POLL_PK                                               */
+/*==============================================================*/
+create unique index POLL_PK on POLL (
+IDPOLL ASC
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_5_FK                                     */
+/*==============================================================*/
+create index RELATIONSHIP_5_FK on POLL (
+IDTEST ASC
+);
+
+/*==============================================================*/
+/* Table: QUESTIONS                                             */
+/*==============================================================*/
+create table QUESTIONS 
+(
+   IDQUESTION           int auto_increment             not null,
+   IDTEST               integer             null,
+   VALUE                integer              null,
+   QUESTIONS            char(100)                      null,
+   DESCRIPTIONS         char(100)                     null,
+   DELETED_AT           boolean                        null,
+   constraint PK_QUESTIONS primary key (IDQUESTION)
+);
+
+/*==============================================================*/
+/* Index: QUESTIONS_PK                                          */
+/*==============================================================*/
+create unique index QUESTIONS_PK on QUESTIONS (
+IDQUESTION ASC
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_7_FK                                     */
+/*==============================================================*/
+create index RELATIONSHIP_7_FK on QUESTIONS (
+IDQUESTION ASC
+);
+
+/*==============================================================*/
+/* Table: TESTS                                                 */
+/*==============================================================*/
+create table TESTS 
+(
+   IDTEST               int auto_increment             not null,
+  IDUSER               integer        null,
+   NAME                 char(50)                       null,
+   CUT_POINT            integer                        null,
+   MAX_POINT            integer                        null,
+   OBSERVATIONS         char(100)                      null,
+   DELETED_AT           boolean                        null,
+   constraint PK_TESTS primary key (IDTEST)
+);
+
+/*==============================================================*/
+/* Index: TESTS_PK                                              */
+/*==============================================================*/
+create unique index TESTS_PK on TESTS (
+IDTEST ASC
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_2_FK                                     */
+/*==============================================================*/
+create index RELATIONSHIP_2_FK on TESTS (
+IDTEST ASC
+);
+
+/*==============================================================*/
+/* Table: USERS                                                 */
+/*==============================================================*/
+create table USERS 
+(
+   IDUSER               int auto_increment             not null,
+   RUN                  integer                        null,
+   DV                   char(50)                       null,
+   NAME_US            char(50) null,
+   FATHER_NAME          char(50)                       null,
+   MOTHER_NAME          char(50)                       null,
+   GENDER               char(20)                       null,
+   BIRTHDAY             char(50)                       null,
+   PASSWORD             varchar(50)                    null,
+   EMAIL                char(50)                       null,
+   DELETED_AT           boolean                        null,
+   constraint PK_USERS primary key (IDUSER)
+);
+
+/*==============================================================*/
+/* Index: USERS_PK                                              */
+/*==============================================================*/
+create unique index USERS_PK on USERS (
+IDUSER ASC
+);
+
+alter table ANSWERS
+   add constraint FK_ANSWERS_RELATIONS_QUESTION foreign key (IDQUESTION)
+      references QUESTIONS (IDQUESTION)
+      on update restrict
+      on delete restrict;
+
+
+alter table POLL
+   add constraint FK_POLL_RELATIONS_TESTS foreign key (IDTEST)
+      references TESTS (IDTEST)
+      on update restrict
+      on delete restrict;
+
+alter table POLL
+   add constraint FK_POLL_RELATIONS_PATIENTS foreign key (IDPATIENT)
+      references PATIENTS (IDPATIENT)
+      on update restrict
+      on delete restrict;
+
+alter table QUESTIONS
+   add constraint FK_QUESTION_RELATIONS_TESTS foreign key (IDTEST)
+      references TESTS (IDTEST)
+      on update restrict
+      on delete restrict;
+      '1', '20222323', 'k', 'Jose Alejandro', 'Agurto', 'Vansqes', 'Masculino', '08/20/2000', 'panconmayo', '', '0'
+
+select (RUN,PASSWORD) from USERS;
+select run,password, name_us from users;
+
+insert into tests (name,cut_point,max_point,observations,deleted_at) values ('Test Numero 1',8,16,'Este test es el mas simple que tenemos se pueden sacar pocas conclusiones',False);
+
+insert into answers (idquestion,points,text,idpoll,password_p) values ();
+
+select password from patients;
+
+
+select *from users;
+select *from patients;
+
+select *from QUESTIONS;
+select *from answers;
+select *from tests;
+select *from poll;
+select idtest.tests
+'1', '20222323', 'k', 'Jose Alejandro', 'Agurto', 'Vansqes', 'Masculino', '08/20/2000', 'panconmayo', '', '0'
+
+select  MAX(idpoll) from poll;
+insert into poll (idpoll) values (4,);
+select name,observations from tests where deleted_at = 0;
+
+select questions,descriptions,tests.idtest from questions join tests on tests.idtest=questions.idtest;
+
+select questions,descriptions,tests.idtest,tests.name from questions join tests on questions.idtest = tests.idtest;
+
+select idtest,name,QUESTIONS.QUESTIONS,QUESTIONS.descriptions from tests join QUESTIONS on QUESTIONS.idtest = tests.idtest;
+
+SELECT UTILIZA.DNI_U, UTILIZA.CODIGO_BARRAS, UTILIZA.FECHA_USO, TRABAJADOR.NOMBRE_U , TRABAJADOR.APELLIDO_U  FROM UTILIZA JOIN TRABAJADOR ON UTILIZA.DNI_U = TRABAJADOR.DNI_U
+select idtest,name,observations,questions.idquestions from tests join questions on tests.idtest = questions.idtest;
+
+Select *from tests where DELETED_AT=False;
+'1', '20222323', 'k', 'Jose Alejandro', 'Agurto', 'Vansqes', 'Masculino', '08/20/2000', 'panconmayo', NULL, '0'
+
+select *from patients where run = 124515 and password = 'asdjhbgashgjh';
+select *from tests where DELETED_AT=False;
+select run,password, name_pa from patients;
+
+insert into patients (run,dv,NAME_PA,FATHER_NAME,MOTHER_NAME,GENDER,BIRTHDAY,PASSWORD,OBSERVATIONS,DELETED_AT) values (20222323,'k','Jose Alejandro','Agurto','Vansqes','Masculino','08/20/2000','panconmayo','',false);
+
+insert into users(RUN,DV,NAME_US,FATHER_NAME,MOTHER_NAME,GENDER,BIRTHDAY,PASSWORD,EMAIL,DELETED_AT) values (11111111,'1','Sebastian Antonio','Acevedo','Mariscal','Masculine','01/12/1995','asdasd123123','asd@hotmai.com',false);
+
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'pregunta 1',4,'esta pregunta es de prueba',False);
+
+SHOW PROCESSLIST
+kill 69
+kill 197
+kill 120;
+
+Select *from questions where DELETED_AT=False;
+update questions set questions = 'esta pregunta se modifico', descriptions = 'descripcion modificada' where idquestion = 2;
+
+
+insert into answers (idquestion,points,text,idpoll) values ({0},{1},'{2}',{3});
+
+select idpatient,run,dv,NAME_PA,FATHER_NAME,MOTHER_NAME,GENDER,BIRTHDAY,OBSERVATIONS from patients where DELETED_AT = 0;
+
+
+update patients set observations = NULL where idpatient = 1;
+
+select idpatient,run,dv,NAME_PA,FATHER_NAME,MOTHER_NAME,GENDER,BIRTHDAY,OBSERVATIONS from patients where DELETED_AT = 0;
+
+
+
+
+
+
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (1,'¿Sientes que eres menos valioso que el resto?',4,'Responder de 1 a 4 ,1 como Nunca y 4 como Habitualmente',false);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (1,'¿has perdido o ganado una cantidad de peso importante recientemente (último mes)?',4,'Responder de 1 a 4 ,1 como No he perdido o ganado peso últimamente y 4 como He perdido o ganado más de 7 kilos',false); 
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (1,'¿Te sientes triste, vacío o sin esperanza?',4,'Responder de 1 a 4 ,1 como Nunca y 4 como Habitualmente',false);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (1,'¿Estas más irritable últimamente?',4,'Responder de 1 a 4 ,1 como Ya no me irritan cosas que antes lo hacían y 4 como Me siento irritado la mayoría del tiempo',false);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Sientes que todo lo que haces lleva al fracaso?',4,'Responder de 1 a 4 - 1 Completamente de desacuerdo 2 Un poco desacuerdo 3 De acuerdo 4 Completamente de acuerdo',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Te has sentido culpable de todo lo que haces?',4,'Responder de 1 a 4 - 1 Para nada 2 A veces 3 un poco 4 Siempre',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Cuándo tienes un buen momento puedes disfrutarlo sin recordar el pasado?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Te encuentras sin ganas o energías frecuentemente?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Tienes problemas de concentración regularmente?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Qué tan a menudo sales con amigos o realizas actividades grupales?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿últimamente cuentas con el mismo apetito de siempre?',4,'Responder de 1 a 4 - 1 He perdido completamente el hambre 2 Ahora tengo mucho menos hambre 3 No tengo tanta hambre como antes 4 Mi apetito esta igual que siempre',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Te cuesta disfrutar de las actividades que normalmente te gusta realizar?',4,'Responder de 1 a 4 - 1 Perdí toda la satisfacción al hacerlo 2 No disfruto las cosas como antes 3 Disfruto a veces  4 Sigo disfrutando como siempre',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Como duermes últimamente?',4,'Responder de 1 a 4 - 1 Me despierto muchas veces durante la noche y no puedo volver a dormir 2 Me despierto algunas veces durante la noche y me cuesta volver a dormir 3 No duermo tan bien como antes 4 Duermo tan bien como siempre',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Tienes problemas para tener relaciones sociales?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
+insert into QUESTIONS(idtest,questions,value,descriptions,deleted_at) values (NULL,'¿Qué tan a menudo piensas en las demás personas (amigos, familiares, etc.)?',4,'Responder de 1 a 4 - 1 Nunca 2 Muy pocas veces 3 a veces 4 Habitualmente',False);
